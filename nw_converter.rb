@@ -114,6 +114,7 @@ end
 ##
 # Script entry point
 ##
+# TODO: sep this part out?
 if ARGV[0].nil?
   puts "Please supply a path to the statement you want to convert"
   puts "Exiting..."
