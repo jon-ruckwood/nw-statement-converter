@@ -1,27 +1,31 @@
-#!/usr/bin/ruby
-#
-# nw_converter.rb converts CSV banking statements from Nationwide into a more agreeable format for iBank to import.
-# Copyright (C) 2007  Jonathan Ruckwood
-#
-# This program is free software; you can redistribute it and/or
-# modify it under the terms of the GNU General Public License
-# as published by the Free Software Foundation; either version 2
-# of the License, or (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-# 
-# Contact:
-#   Jonathan Ruckwood <jonathan.ruckwood@gmail.com>
-#
+=begin
+  nw_converter.rb converts CSV banking statements from Nationwide into a more agreeable format for iBank to import.
+  Copyright (C) 2007  Jonathan Ruckwood
+  
+  This program is free software; you can redistribute it and/or
+  modify it under the terms of the GNU General Public License
+  as published by the Free Software Foundation; either version 2
+  of the License, or (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+=end
+
 require 'date'
 
+##
+# Converts the contents of a CSV statement from Nationwide 
+# bank into a format which iBank is able to import
+#
+# @version: 1.00
+# @author: Jonathan Ruckwood
+#
 class NationwideStatementConverter
   
   # constants
@@ -39,7 +43,7 @@ class NationwideStatementConverter
   # To:
   #   Date, Memo, Amount
   # And outputs the resulting string
-  ##
+  #
   def convert(content)
     output = ""
     # add the column headings
@@ -94,50 +98,24 @@ class NationwideStatementConverter
     end
     
     # output
-    return output
-    
+    return output  
   end
 
   private
-  
+
+  ##
+  # Constructs the header for converted CSV document
+  #  
   def outputHeader
     return OUTPUT_COLS.join(", ") + ROW_SEP
   end
   
+  ##
+  # Reformats a date into a format more acceptable for iBank
+  #
   def reformatDate(date)
     d = Date.parse(date)
     return "#{d.year}/#{d.month}/#{d.day}"
   end
 
-end
-
-##
-# Script entry point
-##
-# TODO: sep this part out?
-if ARGV[0].nil?
-  puts "Please supply a path to the statement you want to convert"
-  puts "Exiting..."
-  exit
-else
-  statementPath = ARGV[0]
-  statementContents = nil
-  # read in
-  begin 
-    statementContents = File.open(statementPath) { | f | f.read }
-  rescue Errno::ENOENT
-    puts "Error, the file cannot be found! Please check the path and try again"
-    puts "Exiting..."
-    exit
-  end
-  # convert
-  converter = NationwideStatementConverter.new
-  convertedStatement = converter.convert(statementContents)
-  # save new converted statement
-  fileName = File.basename(statementPath, ".*") + " (Converted).csv"
-  dirName = File.dirname(statementPath)
-  savePath = dirName + "/" + fileName
-  puts "Saving converted statement to #{savePath}"
-  File.open(savePath, "w") { | f | f << convertedStatement }
-  puts "Finished"
 end
