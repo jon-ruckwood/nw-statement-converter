@@ -1,73 +1,62 @@
-=begin
-  Rakefile Builds scripts to make the NationwideStatementConverter usable.
-  Copyright (C) 2007  Jonathan Ruckwood
-  
-  This program is free software; you can redistribute it and/or
-  modify it under the terms of the GNU General Public License
-  as published by the Free Software Foundation; either version 2
-  of the License, or (at your option) any later version.
 
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
+require 'rake/clean'
+require 'rake/testtask'
 
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-=end
+CLEAN.include('bin/*.rb')
+
 MARKER = "##KLASS_SUBS##"
-KLASS_FILE = "nw_converter.rb"
-SCRIPT_VARIANTS = { :standalone => { :tmpl => "standalone_script.tmpl", :out => "nw_converter_sa.rb" },
-                    :bundled    => { :tmpl => "bundle_script.tmpl" , :out => "nw_converter_bn.rb" } }
+KLASS_FILE = "lib/nw_converter.rb"
+
+task :default => [ :build, :chmod ]
+
 ##
-# Tasks
+# Build
 #
-desc "Default task (build all)"
-task :default => :all
-
-desc "Build all"
-task :all => [ :standalone, :bundled ]
-
-desc "Build the stand alone script that can handle one statement at a time."
-task :standalone do
-  puts "Building standalone script."
-  build(:standalone)
-  puts "Done!"
-end
-
-desc "Build the script that can be used to make a Mac app bundle that handles mutliple statements."
-task :bundled do
-  puts "Building bundle script."
-  build(:bundled)
-  puts "Done!"
-end
-
-desc "Remove the built scripts."
-task :clean do
-  SCRIPT_VARIANTS.each_value do | v |
-    fileOut = v[:out]
-    begin 
-      puts "Removed #{fileOut}" if File.delete(fileOut)
-    rescue Errno::ENOENT
-      puts "No file named '#{fileOut}' to delete!"
-    end
+desc "Build all script variants"
+task :build do
+  Dir["lib/*.tmpl"].each do | tmpl | 
+    tmpl_contents = File.open(tmpl) { | f | f.read }
+    klass_contents = File.open(KLASS_FILE) { | f | f.read }
+    script_output = tmpl_contents.sub(MARKER, klass_contents)
+    # generate file name
+    file_name = File.basename(tmpl, ".*") + ".rb"
+    puts "Building #{file_name}"
+    File.open("bin/" + file_name, "w") { | f | f << script_output }
   end
-  puts "Done!"
 end
 
-# TODO: Test tasks
+desc "Make scripts executable"
+task :chmod do
+  Dir["bin/*.rb"].each { | file | File.chmod(0775, file) }
+end
+
+# TODO: strip comments out?
+#task :strip do
+#  Dir["bin/*.rb"].each do | file |
+#    
+#  end
+#end
+
+# TODO: look into...
+#task :dist do
+#  PKG_FILES = FileList[ 'Rakefile', 'doc/*', 'lib/*', 'test/**/*' ]
+#  PKG_FILES.exclude('.svn')
+#end
 
 ##
-# Helper functions
+# Test
 # 
-def build(variant)
-  tmplIn = SCRIPT_VARIANTS[variant][:tmpl]
-  fileOut = SCRIPT_VARIANTS[variant][:out]
-  # Get the contents of the two files, combile and save
-  puts "Combining #{KLASS_FILE} and #{tmplIn} into script #{fileOut}"
-  converterKlass = File.open(KLASS_FILE) { | f | f.read }
-  tmplScript = File.open(tmplIn) { | f | f.read }
-  outputScript = tmplScript.gsub(MARKER, converterKlass)
-  File.open(fileOut, "w") { | f | f << outputScript }
+Rake::TestTask.new(:test) do | task |
+  task.test_files = FileList['test/test*.rb']
+  task.warning = true
+  task.verbose = false
 end
+
+##
+# Misc fun!
+#
+desc "Look for TODO and FIXME tags!"
+task :todo do
+  FileList['lib/*', 'test/*.rb'].egrep(/#.*(FIXME|TODO)/)
+end
+

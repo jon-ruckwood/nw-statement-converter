@@ -1,6 +1,6 @@
 #!/usr/bin/ruby
 
-##KLASS_SUBS##
+require 'nw_converter'
 
 ##
 # Entry point for the bundle script. This variant is for use when creating a Mac
@@ -30,7 +30,7 @@ else
     converter = NationwideStatementConverter.new
     convertedStatement = converter.convert(statementContents)
     # save new converted statement
-    fileName = File.basename(statementPath, ".*") + " (Converted).csv"
+    fileName = File.basename(statementPath, ".*") + " Converted.csv"
     dirName = File.dirname(statementPath)
     savePath = dirName + "/" + fileName
     puts "Saving converted statement to #{savePath}"
