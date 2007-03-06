@@ -1,6 +1,9 @@
 #!/usr/bin/ruby
 
-require 'nw_converter'
+# Get the resource path so we can load required files -- yuck!
+RESOURCE_PATH = ARGV[0] + "/Contents/Resources/"
+
+require RESOURCE_PATH + 'nw_converter.rb'
 
 ##
 # Entry point for the bundle script. This variant is for use when creating a Mac
