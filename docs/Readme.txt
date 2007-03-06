@@ -1,29 +1,26 @@
-Nationwide Statement Converter
+﻿Nationwide Statement Converter
 ==============================
 
 Project Homepage: http://code.google.com/p/nw-statement-converter/
 
-Requirments
-===========
+Requirements
+============
 
-The core of this program is written in Ruby and so for it to work you need to ensure Ruby is installed on your system. I'm not sure how long Ruby has been included with Mac OS X but if you are running 10.4 (Tiger) or later you should be fine! :-)
+PowerPc/Intel Mac running Mac OS X 10.4 (Tiger) or later
 
-You can check if you have Ruby by performing the following steps:
-
-1) Open Terminal (Located in Applications -> Utilities)
-2) Typing "ruby -v" and hitting return in the Terminal window
-3) If you have Ruby you should see some text along the lines of:
-
-ruby 1.8.2 (2004-12-25) [universal-darwin8.0]     
-
-If this is the case then everything should be fine.
 
 Intro
 =====
 
-This program will converter Nationwide CSV statement files into a format that will work with iBank's import feature. To operate simply select one or more CSV files and drag them onto the Nationwide Statement Converter program. 
+This program will converter Nationwide CSV statement files into a format 
+that will work with iBank's import feature. To operate simply select one 
+or more CSV files and drag them onto the Nationwide Statement Converter 
+program. 
 
-This opens a new window and shows you the details of the conversion progress. Any errors or problems will be displayed in this window. Your converted statements will be saved in same the location sa the statements you dropped onto the program.
+This opens a new window and shows you the details of the conversion progress. 
+Any errors or problems will be displayed in this window. Your converted 
+statements will be saved in same the location as the statements you dropped 
+onto the program.
 
 The conversion process will turn transactions in the statement from: 
 
@@ -39,13 +36,59 @@ Date, Payee, Memo, Amount
 2006/12/11,,"Pay card","L-220.00"
 2006/12/11,,"Transfer","L-30.00"
 
-Yay!
+Once you have converted your statements load up iBank's Import Screen. For 
+iBank to import the converted statements correctly you need to ensure that 
+the column order matches the following:
+
+Date, Payee, Memo, Amount 
+
+And that the Date Format drop down is set to:
+
+yyyy/mm/dd 
+
+These steps should ensure iBank imports the data correctly.
+
 
 Problems
 ========
 
 *Partial Conversion Failure on MiniStatement.csv Files
-	- The date will not be converted correctly, you will need to edit the converted file by hand.
+	- The date will not be converted correctly, you will need to edit the 
+	converted file by hand.
+
+*Ruby related errors, e.g. “Command not found”
+	- If you are running a version of Mac OS X prior to 10.4 (Tiger) it is 	
+	possible that Ruby is not installed on your system. Ruby is a programming 	
+	language that the converter is written in.
+	
+	- You can check if ruby is on your computer by doing the following:
+		1. Open Terminal (Located in Applications -> Utilities)
+		2. Typing "ruby -v" and hitting return in the Terminal window
+		3. If Ruby is there you should see some text along the lines of:
+			
+			ruby 1.8.2 (2004-12-25) [universal-darwin8.0]
+
+	- If Ruby is on your system it may be worth filing a bug on the project site 
+	to see if the problem can be resolved.
+
+
+Bug Reporting
+=============
+
+If you experience any problems that are not covered in the Problems section please 
+feel free to submit them to:
+
+http://code.google.com/p/nw-statement-converter/issues/list
+
+
+Thanks
+======
+
+The bundled version was created using Sveinbjorn Thordarson's Platypus development tool. 
+You can find out more about this handy tool here:
+
+http://www.sveinbjorn.org/platypus
+
 
 License
 =======
