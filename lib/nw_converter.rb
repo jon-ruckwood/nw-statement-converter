@@ -23,7 +23,7 @@ require 'date'
 # Converts the contents of a CSV statement from Nationwide 
 # bank into a format which iBank is able to import
 #
-# @version: 1.02
+# @version: 1.0.3
 # @author: Jonathan Ruckwood
 #
 class NationwideStatementConverter
