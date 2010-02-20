@@ -1,6 +1,6 @@
 =begin
   nw_converter.rb converts CSV banking statements from Nationwide into a more agreeable format for iBank to import.
-  Copyright (C) 2007  Jonathan Ruckwood
+  Copyright (C) 2010  Jonathan Ruckwood
   
   This program is free software; you can redistribute it and/or
   modify it under the terms of the GNU General Public License
@@ -23,16 +23,16 @@ require 'date'
 # Converts the contents of a CSV statement from Nationwide 
 # bank into a format which iBank is able to import
 #
-# @version: 1.00
+# @version: 1.02
 # @author: Jonathan Ruckwood
 #
 class NationwideStatementConverter
   
   # constants
   GBP = "\243"
-  ROW_SEP = "\r\n"
+  ROW_SEP = "\n"
   COL_SEP = ","
-  INPUT_COLS = %w{ Date Transactions Credits Debits Balance }
+  INPUT_COLS = %w{ Date Transactions Debits Credits Balance }
   EXPECTED_COL_NO = INPUT_COLS.size
   OUTPUT_COLS = %w{ Date Payee Memo Amount }
   DATE_SEP = "/"
@@ -49,7 +49,8 @@ class NationwideStatementConverter
   # Checks to see whether a row has the expected number of columns
   # 
   def expected_col_no?(row)
-    return row.split(COL_SEP).size == EXPECTED_COL_NO
+    valid = row.split(COL_SEP).size == EXPECTED_COL_NO
+    return valid
   end
 
   ##
@@ -61,9 +62,9 @@ class NationwideStatementConverter
 
   ##
   # Converts rows from:
-  #   Date, Transactions, Credits, Debits, Balance
+  #   INPUT_COLS
   # To:
-  #   Date, Memo, Amount
+  #   OUTPUT_COLS
   # And outputs the resulting string
   #
   def convert(content)
@@ -80,7 +81,7 @@ class NationwideStatementConverter
         # TODO: This shouldn't really be checked after we've encountered it
         if !is_header_row?(row)        
             # extract the details
-            date, memo, credit, debit, balance = row.split(COL_SEP)
+            date, memo, debit, credit, balance = row.split(COL_SEP)
             
             # reformat the date
             begin
