@@ -1,6 +1,14 @@
 ﻿Nationwide Statement Converter
 ==============================
 
+NOTE: This probably does not work with newer versions of iBank
+
+Download
+========
+You can download the application from here:
+
+https://code.google.com/p/nw-statement-converter/downloads/list
+
 Requirements
 ============
 
